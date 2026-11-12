@@ -1,0 +1,21 @@
+本项目记录了针对OWASP Juice Shop靶场5星-6星的一些漏洞类别
+
+1. 身份认证与鉴权体系缺陷 (Broken Authentication & JWT)
+Unsigned JWT (5)：利用 JWT `alg: none` 空算法缺陷，剥离签名伪造任意用户身份。
+Forged Signed JWT (6)：获取公开的 `jwt.pub` 公钥，利用 RS256 向 HS256 降级的“算法混淆”漏洞伪造合法签名。
+Two Factor Authentication (5)：结合 SQL 注入拖库获取明文存储的 `totpSecret` 种子密钥，克隆双因素认证动态口令。
+Reset Morty's Password (5)：结合开源情报分析与 `X-Forwarded-For` 请求头伪造绕过 IP 频率限制，爆破安全问题答案。
+
+2. 密码学缺陷与敏感数据暴露
+Login Support Team (6）：下载未受保护的 `incident-support.kdbx` 密码库，审计前端 `main.js` 泄露的密码策略正则，针对性破解主密码提取高权限凭证。
+Premium Paywall (6)：通过目录遍历获取 `/encryptionkeys/premium.key` 中的 AES-256-CBC 密钥与 IV，解密前端隐藏路径直接绕过付费墙。
+Forged Coupon (6)：逆向备份文件中的 Z85 编码规则，伪造高折扣优惠券实现“零元购”。
+Imaginary Challenge (6)：审计前端源码提取 `Hashids` 盐值与长度配置，离线伪造通关存档代码。
+
+3. 访问控制、文件安全与服务端请求伪造
+Retrieve Blueprint (5）：利用 `%00` / `%2500` 空字节截断绕过后端文件下载后缀白名单校验。
+SSRF (6)：静态逆向提取样本中的内部接口路径，利用个人资料远程头像拉取功能触发服务端本地环回请求。
+
+4. 业务逻辑与组件供应链安全
+Multiple Likes (6)：利用 Burp Suite Repeater 单数据包并发击穿 TOCTOU 检查窗口，实现条件竞争刷赞。
+Supply Chain Attack (5)：审查 `package.json.bak` 依赖清单，定位存在历史凭证窃取风险的 `eslint-scope` 组件并提交溯源报告。
